@@ -102,6 +102,49 @@ Este proyecto implementa un sistema completo de gestión de productos con un fro
 - `PUT /api/products/{id}`: Actualizar un producto existente
 - `DELETE /api/products/{id}`: Eliminar un producto
 
-## Licencia
+## Seguridad del Sitio
 
-Este proyecto está licenciado bajo [MIT License](LICENSE).
+El sistema implementa múltiples capas de seguridad para proteger tanto la información de los usuarios como la integridad de los datos:
+
+### Autenticación y Autorización
+- **JWT (JSON Web Tokens)** - Sistema de autenticación basado en tokens que permite verificar la identidad del usuario sin necesidad de consultar la base de datos en cada petición.
+- **Contraseñas Hasheadas** - Todas las contraseñas son hasheadas utilizando bcrypt, lo que garantiza que incluso si la base de datos es comprometida, las contraseñas están protegidas.
+- **Control de Acceso por Roles** - Diferentes niveles de acceso según el rol del usuario (administrador, usuario regular).
+- **Expiración de Sesión** - Los tokens de autenticación tienen un tiempo de vida limitado (60 minutos) para minimizar riesgos.
+
+### Seguridad en la API
+- **Validación de Datos** - Pydantic verifica que todos los datos cumplen con los esquemas definidos antes de procesarlos.
+- **Protección CORS** - Configuración de CORS para permitir solo peticiones desde orígenes autorizados.
+- **Endpoints Protegidos** - Rutas que requieren autenticación mediante decoradores de dependencia en FastAPI.
+
+### Seguridad en el Frontend
+- **Almacenamiento Seguro de Tokens** - Los tokens se almacenan de forma segura y se envían en los headers de autorización.
+- **Interceptores de Axios** - Manejo automático de tokens expirados y errores de autenticación.
+- **Validación de Formularios** - Validación tanto en cliente como en servidor para prevenir inyecciones y otros ataques.
+
+## Persistencia de Datos
+
+El sistema utiliza PostgreSQL como base de datos principal, con un enfoque en la durabilidad y consistencia de los datos:
+
+### Estructura de Almacenamiento
+- **Volúmenes de Docker** - Los datos de PostgreSQL se almacenan en volúmenes Docker persistentes (`postgres_data`) que sobreviven a reinicios de contenedores.
+- **Relaciones y Constraints** - Definición clara de relaciones entre entidades con restricciones de integridad referencial.
+
+### Respaldos y Recuperación
+- **Configuración de Respaldos** - PostgreSQL permite configurar respaldos automáticos programados.
+- **Punto de Restauración** - Capacidad de restaurar la base de datos a un punto específico en el tiempo gracias al sistema de WAL (Write-Ahead Logging) de PostgreSQL.
+
+### Optimización
+- **Índices** - Uso estratégico de índices para mejorar el rendimiento de consultas frecuentes.
+- **Conexiones Pooling** - Gestión eficiente de conexiones a la base de datos mediante SQLAlchemy.
+
+## Buenas Prácticas Implementadas
+
+### Arquitectura y Diseño
+- **Patrón MVC** - Separación clara de Modelo (SQLAlchemy), Vista (React) y Controlador (FastAPI).
+- **API RESTful** - Diseño de API siguiendo principios REST con nombres de recursos apropiados y verbos HTTP semánticos.
+- **Principio de Responsabilidad Única** - Cada componente y módulo tiene una única responsabilidad.
+
+### Seguridad
+- **Principio de Menor Privilegio** - Los usuarios solo tienen acceso a los recursos que necesitan.
+- **Auditoría de Dependencias** - Control de versiones de dependencias para evitar vulnerabilidades conocidas.

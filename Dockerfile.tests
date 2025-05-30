@@ -1,0 +1,19 @@
+# Dockerfile para pruebas
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copiar los requisitos primero para aprovechar la caché de Docker
+COPY backend/requirements.txt .
+
+# Instalar dependencias
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Instalar dependencias adicionales para pruebas
+RUN pip install --no-cache-dir pytest pytest-cov httpx pytest-xdist pytest-mock
+
+# Copiar el código del backend
+COPY backend/ .
+
+# Comando para ejecutar las pruebas
+CMD ["python", "run_tests.py"]

@@ -50,6 +50,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  # Adminer service for database management
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
